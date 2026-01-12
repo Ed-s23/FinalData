@@ -1,11 +1,11 @@
 :root {
-    --bg-dark: #0f0f0f;
-    --card-bg: #1a1a1a;
-    --beige: #e8d8c9;
-    --blue: #4b607f;
-    --orange: #f3701e;
-    --text-light: #f5f5f5;
-    --text-muted: #b5b5b5;
+    --bg-dark: #100E11;        /* Woodsomke */
+    --card-dark: #1a1617;
+    --card-light: #C0B5B3;     /* Pink Swan */
+    --gray: #706B68;           /* Dove Gray */
+    --accent: #490206;         /* Bulgarian Rose */
+    --text-dark: #2C0001;      /* Sepia Black */
+    --text-light: #F5F2F1;
 }
 
 * {
@@ -15,42 +15,54 @@
 
 body {
     margin: 0;
+    padding: 40px;
     background: var(--bg-dark);
     color: var(--text-light);
-    padding: 40px;
 }
 
 .container {
-    max-width: 900px;
+    max-width: 1000px;
     margin: auto;
 }
 
+/* ================= TITULOS ================= */
+
 h1 {
-    color: var(--beige);
-    margin-bottom: 20px;
+    font-size: 36px;
+    margin-bottom: 30px;
+    color: var(--card-light);
 }
 
 h2, h3 {
-    color: var(--blue);
-    margin-top: 30px;
+    color: var(--gray);
+    margin-bottom: 15px;
 }
+
+/* ================= TARJETAS ================= */
 
 .card {
-    background: var(--card-bg);
-    border-radius: 14px;
-    padding: 25px;
-    margin-bottom: 25px;
-    box-shadow: 0 10px 30px rgba(0,0,0,.4);
+    background: linear-gradient(
+        145deg,
+        #1c1718,
+        #120f10
+    );
+    border-radius: 18px;
+    padding: 28px;
+    margin-bottom: 30px;
+    box-shadow: 0 15px 40px rgba(0,0,0,.6);
 }
 
+/* ================= ESTADISTICAS ================= */
+
 .stat {
-    font-size: 18px;
-    margin: 10px 0;
+    font-size: 20px;
 }
 
 .stat strong {
-    color: var(--orange);
+    color: var(--accent);
 }
+
+/* ================= LISTAS ================= */
 
 ul {
     list-style: none;
@@ -58,76 +70,80 @@ ul {
 }
 
 ul li {
-    padding: 8px 0;
-    border-bottom: 1px solid #2a2a2a;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(255,255,255,.08);
 }
 
+/* ================= BOTONES ================= */
+
 button {
-    background: var(--orange);
-    color: #000;
+    background: var(--accent);
+    color: #fff;
     border: none;
-    padding: 12px 22px;
-    border-radius: 10px;
+    padding: 14px 26px;
+    border-radius: 14px;
     font-size: 15px;
     cursor: pointer;
-    transition: transform .2s, box-shadow .2s;
+    transition: all .25s ease;
 }
 
 button:hover {
+    background: #5c0708;
     transform: translateY(-2px);
-    box-shadow: 0 6px 15px rgba(243,112,30,.4);
+    box-shadow: 0 8px 20px rgba(73,2,6,.6);
 }
+
+/* ================= IMAGENES ================= */
 
 img {
     max-width: 100%;
-    border-radius: 12px;
+    border-radius: 14px;
     margin-top: 15px;
+    box-shadow: 0 10px 25px rgba(0,0,0,.5);
 }
 
+/* ================= INPUT FILE ================= */
+
 input[type="file"] {
-    background: var(--card-bg);
+    background: var(--card-dark);
     color: var(--text-light);
-    border: 2px dashed var(--blue);
-    padding: 20px;
-    border-radius: 12px;
+    border: 2px dashed var(--gray);
+    padding: 22px;
+    border-radius: 16px;
     width: 100%;
     margin-bottom: 20px;
 }
-body {
-    background-color: #1e1e1e;
-    color: #e8d8c9;
-    font-family: Arial, sans-serif;
-}
 
-h1, h2, h3 {
-    color: #f3701e;
-}
+/* ================= TABLAS ================= */
 
 .table-container {
     overflow-x: auto;
-    margin-top: 20px;
+    margin-top: 25px;
 }
 
 .data-table {
-    border-collapse: collapse;
     width: 100%;
-    background-color: #2a2a2a;
-    color: #e8d8c9;
-    font-size: 14px;
+    border-collapse: collapse;
+    background: var(--card-light);
+    color: var(--text-dark);
+    border-radius: 14px;
+    overflow: hidden;
 }
 
 .data-table th {
-    background-color: #4b607f;
-    color: #ffffff;
-    padding: 8px;
-    text-align: left;
+    background: var(--accent);
+    color: #fff;
+    padding: 12px;
+    font-size: 14px;
+    text-align: center;
 }
 
 .data-table td {
-    padding: 6px;
-    border-bottom: 1px solid #444;
+    padding: 10px;
+    text-align: center;
+    border-bottom: 1px solid rgba(0,0,0,.15);
 }
 
 .data-table tr:hover {
-    background-color: #3a3a3a;
+    background: rgba(73,2,6,.08);
 }

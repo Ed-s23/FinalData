@@ -9,7 +9,7 @@
 
 </head>
 <body>
-    |
+    <h1>Resultados del proyecto </h1>
 {% if table %}
 <h2>Vista previa del Dataset</h2>
 
@@ -20,18 +20,67 @@
 
 <div class="container">
 
-    <h1>Resultados Finales</h1>
-
-    <div class="card">
-        <p class="stat"><strong>Accuracy:</strong> {{ accuracy }}%</p>
-    </div>
-
     {% if plot_url %}
     <div class="card">
         <h3>Distribución del protocolo</h3>
         <img src="{{ plot_url }}" alt="Gráfica protocol_type">
     </div>
     {% endif %}
+    <h1>Resultados Finales</h1>
+
+    <div class="card">
+        <p class="stat"><strong>Accuracy:</strong> {{ accuracy }}%</p>
+    </div>
+{% if protocol_data %}
+<div class="card">
+    <h3>Conteo de Protocolos</h3>
+
+    <div class="table-container">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Protocolo</th>
+                    <th>Cantidad</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for protocol, count in protocol_data %}
+                <tr>
+                    <td>{{ protocol }}</td>
+                    <td>{{ count }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endif %}
+{% if class_data %}
+<div class="card">
+    <h3>Distribución de Clases</h3>
+
+    <div class="table-container">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Clase</th>
+                    <th>Cantidad</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for label, count in class_data %}
+                <tr>
+                    <td>{{ label }}</td>
+                    <td>{{ count }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endif %}
+
+
 
     <div class="card">
         <h3>Distribución del Dataset</h3>

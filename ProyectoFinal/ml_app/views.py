@@ -64,6 +64,10 @@ def run_model(request):
         results['plot_url'] = plot_protocol_type(df)
         #results['corr_img'] = plot_correlation_matrix(df)
         results['corr_img'] = plot_correlation_matrix(df)
+        #! Conteo de los tipos de clases
+        if 'class' in df.columns:
+            class_counts = df['class'].value_counts()
+            results['class_data'] = class_counts.items()
 
         if 'class' in df.columns:
             le = LabelEncoder()
@@ -75,9 +79,16 @@ def run_model(request):
             index=False,
             border=0
         )
+        if 'protocol_type' in df.columns:
+            protocol_counts = df['protocol_type'].value_counts()
+            protocol_data = protocol_counts.items()
+        else:
+            protocol_data = None
 
+        results['protocol_data'] = protocol_data
         results['table'] = table_html
         return render(request, 'results.html', results)
+
 
 
 
