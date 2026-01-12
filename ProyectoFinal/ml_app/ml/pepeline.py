@@ -4,12 +4,12 @@ from sklearn.preprocessing import StandardScaler, OneHotEncoder
 from sklearn.linear_model import LogisticRegression
 from sklearn.impute import SimpleImputer
 
-
+#! Creacion de pipelines para las partes del modelo 
 def create_pipeline(num_cols, cat_cols):
 
     transformers = []
 
-    # 🔢 Pipeline para columnas numéricas
+    #!Pipeline para columnas numéricas
     if num_cols:
         numeric_pipeline = Pipeline(steps=[
             ('imputer', SimpleImputer(strategy='median')),
@@ -19,7 +19,7 @@ def create_pipeline(num_cols, cat_cols):
             ('num', numeric_pipeline, num_cols)
         )
 
-    # 🔤 Pipeline para columnas categóricas
+    #!Pipeline para columnas categóricas
     if cat_cols:
         categorical_pipeline = Pipeline(steps=[
             ('imputer', SimpleImputer(strategy='most_frequent')),
@@ -32,13 +32,13 @@ def create_pipeline(num_cols, cat_cols):
             ('cat', categorical_pipeline, cat_cols)
         )
 
-    # 🧠 Preprocesador completo
+    #!Preprocesador completo
     preprocessor = ColumnTransformer(
         transformers=transformers,
         remainder='drop'
     )
 
-    # 🤖 Pipeline final (preprocesamiento + modelo)
+    #!Pipeline final (preprocesamiento + modelo)
     model = Pipeline(steps=[
         ('preprocess', preprocessor),
         ('classifier', LogisticRegression(

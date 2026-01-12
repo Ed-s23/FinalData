@@ -1,43 +1,59 @@
-<h1>Resultados del Modelo</h1>
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Resultados</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
 
-<p><strong>Accuracy:</strong> {{ accuracy }}</p>
-{% if plot_url %}
-    <h2>Distribución del protocolo</h2>
-    <img src="{{ plot_url }}" alt="Gráfica protocol_type">
+</head>
+<body>
+    |
+{% if table %}
+<h2>Vista previa del Dataset</h2>
+
+<div class="table-container">
+    {{ table|safe }}
+</div>
 {% endif %}
-<h3>Matriz de Correlación</h3>
-<img src="/{{ corr_img }}" alt="Matriz de Correlación" width="100%">
 
-<pre>{{ report }}</pre>
-<h3>Distribución del Dataset</h3>
-<ul>
-    <li><strong>Total de registros:</strong> {{ total_size }}</li>
-    <li><strong>Train set:</strong> {{ train_size }}</li>
-    <li><strong>Validation set:</strong> {{ val_size }}</li>
-    <li><strong>Test set:</strong> {{ test_size }}</li>
-     <li>Validation Accuracy: {{ val_accuracy }}%</li>
-</ul>
-<form method="post">
-  {% csrf_token %}
-  {{ form.as_p }}
-  <button type="submit">Predecir</button>
-</form>
+<div class="container">
 
-{% if prediction %}
-  <h2>Resultado: {{ prediction }}</h2>
-{% endif %}
-<h2>Comparación de Modelos</h2>
+    <h1>Resultados Finales</h1>
 
-<table border="1">
-  <tr>
-    <th>Modelo</th>
-    <th>Accuracy (%)</th>
-  </tr>
+    <div class="card">
+        <p class="stat"><strong>Accuracy:</strong> {{ accuracy }}%</p>
+    </div>
 
-  {% for row in comparison %}
-  <tr>
-    <td>{{ row.model }}</td>
-    <td>{{ row.accuracy }}</td>
-  </tr>
-  {% endfor %}
-</table>
+    {% if plot_url %}
+    <div class="card">
+        <h3>Distribución del protocolo</h3>
+        <img src="{{ plot_url }}" alt="Gráfica protocol_type">
+    </div>
+    {% endif %}
+
+    <div class="card">
+        <h3>Distribución del Dataset</h3>
+        <ul>
+            <li><strong>Total de registros:</strong> {{ total_size }}</li>
+            <li><strong>Train set:</strong> {{ train_size }}</li>
+            <li><strong>Validation set:</strong> {{ val_size }}</li>
+            <li><strong>Test set:</strong> {{ test_size }}</li>
+            <li><strong>Validation Accuracy:</strong> {{ val_accuracy }}%</li>
+        </ul>
+    </div>
+
+    {% if corr_img %}
+    <div class="card">
+        <h3>Matriz de correlación</h3>
+        <a href="{{ corr_img }}" download>
+            <button>Descargar matriz de Dorrelacion</button>
+        </a>
+    </div>
+    {% endif %}
+
+</div>
+
+</body>
+</html>

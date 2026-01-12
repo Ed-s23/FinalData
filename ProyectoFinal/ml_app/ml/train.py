@@ -18,7 +18,7 @@ def train_model ( X, y, pipeline):
     model = pipeline.fit(X_train,y_train)
     #* Acuraicy de validacion
     val_score = model.score(X_val, y_val)
-
+    #!Captura de la informacion de acuedo al modelo 
     dataset_info = {
     "train_size": len(X_train),
     "val_size": len(X_val),
@@ -26,26 +26,8 @@ def train_model ( X, y, pipeline):
     "total_size": len(X),
     "val_accuracy": round (val_score * 100,2)
     } 
-    #!guarda el modelo para predecir datos del usuario
-   # model_path = os.path.join(settings.MEDIA_ROOT, 'model.pkl')
-    #joblib.dump(model, model_path)
 
-   
     #pipeline.fit(X_train,y_train)
     return model, X_test, y_test, dataset_info 
 
-#def train_model(X, y, pipeline):
-#    from sklearn.model_selection import train_test_split
 
-#    X_train, X_test, y_train, y_test = train_test_split(
-#        X, y, test_size=0.2, random_state=42, stratify=y
-    #)
-
-#    model = pipeline.fit(X_train, y_train)
-
-    # 💾 Guardar modelo
- #   model_path = os.path.join(settings.MEDIA_ROOT, 'model.pkl')
-#    joblib.dump(model, model_path)
-
- #   return model, X_test, y_test
-    

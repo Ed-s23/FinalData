@@ -1,9 +1,0 @@
-<form method="post">
-  {% csrf_token %}
-  {{ form.as_p }}
-  <button type="submit">Predecir</button>
-</form>
-
-{% if prediction %}
-  <h2>Resultado: {{ prediction }}</h2>
-{% endif %}

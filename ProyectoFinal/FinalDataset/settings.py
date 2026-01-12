@@ -126,4 +126,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 #! y el como servirlos en el desarrollo 
 import os 
 MEDIA_URL = '/media/'
+#MEDIA_ROOT = BASE_DIR / 'media'
+STATIC_URL = '/static/'
+
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

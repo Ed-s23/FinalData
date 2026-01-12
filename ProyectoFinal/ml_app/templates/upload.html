@@ -1,16 +1,23 @@
+{% load static %}
 <!DOCTYPE html>
 <html>
 <head>
     <title>Subir Dataset</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 <body>
-    <h1>Subir Dataset</h1>
 
-    <form method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        <input type="file" name="dataset" required>
-        <button type="submit">Ejecutar modelo</button>
-    </form>
+<div class="container">
+    <h1>Subir DataSet</h1>
+
+    <div class="card">
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <input type="file" name="dataset" required>
+            <button type="submit">Procesar</button>
+        </form>
+    </div>
+</div>
 
 </body>
 </html>
