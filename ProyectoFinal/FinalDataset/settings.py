@@ -23,9 +23,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-^42sz*m%yew1igyl3oiug0#^tr09zvoub!7&^c-1!^wel*c%)e'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -48,6 +48,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 ROOT_URLCONF = 'FinalDataset.urls'
@@ -124,9 +126,14 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 #! Donde se guardaran los archivos al subirse
 #! y el como servirlos en el desarrollo 
-import os 
-MEDIA_URL = '/media/'
-#MEDIA_ROOT = BASE_DIR / 'media'
-STATIC_URL = '/static/'
+from pathlib import Path
 
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Static files
+STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+# Media files (uploads)
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
