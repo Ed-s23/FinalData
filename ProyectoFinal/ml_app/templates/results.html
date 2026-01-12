@@ -1,5 +1,11 @@
 <h1>Resultados del Modelo</h1>
 
 <p><strong>Accuracy:</strong> {{ accuracy }}</p>
+{% if plot_url %}
+    <h2>Distribución del protocolo</h2>
+    <img src="{{ plot_url }}" alt="Gráfica protocol_type">
+{% endif %}
+<h3>Matriz de Correlación</h3>
+<img src="/{{ corr_img }}" alt="Matriz de Correlación" width="100%">
 
 <pre>{{ report }}</pre>
