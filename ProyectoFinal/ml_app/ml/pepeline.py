@@ -15,25 +15,69 @@ from sklearn.pipeline import Pipeline
 from sklearn.compose import ColumnTransformer
 from sklearn.preprocessing import StandardScaler, OneHotEncoder
 from sklearn.linear_model import LogisticRegression
+from sklearn.impute import SimpleImputer
 
-def create_pipeline(num_cols, cat_cols):
 
-    num_pipeline = Pipeline(steps=[
+
+"""def create_pipeline(num_cols, cat_cols):
+
+    numeric_pipeline = Pipeline(steps=[
+        ('imputer', SimpleImputer(strategy='median')),
         ('scaler', StandardScaler())
     ])
 
-    cat_pipeline = Pipeline(steps=[
+    #preprocessor = ColumnTransformer(
+    #    transformers=[
+    #        (
+    #            'num',StandardScaler(), num_cols
+    #        ),
+    #        ('cat', OneHotEncoder(handle_unknown='ignore'),cat_cols), 
+    #    ]
+    #)
+    
+    categorical_pipeline = Pipeline(steps=[
+        ('imputer', SimpleImputer(strategy='most_frequent')),
         ('encoder', OneHotEncoder(handle_unknown='ignore'))
     ])
 
     preprocessor = ColumnTransformer(transformers=[
-        ('num', num_pipeline, num_cols),
-        ('cat', cat_pipeline, cat_cols)
+        ('num', numeric_pipeline, num_cols),
+        ('cat', categorical_pipeline, cat_cols)
     ])
-
-    pipeline = Pipeline(steps=[
+    
+    model = Pipeline(steps=[ 
         ('preprocessor', preprocessor),
         ('model', LogisticRegression(max_iter=1000))
     ])
 
-    return pipeline
+    return model"""
+def create_pipeline(num_cols, cat_cols):
+
+    transformers = []
+
+    if len(num_cols) > 0:
+        numeric_pipeline = Pipeline(steps=[
+            ('imputer', SimpleImputer(strategy='median')),
+            ('scaler', StandardScaler())
+        ])
+        transformers.append(('num', numeric_pipeline, num_cols))
+
+    if len(cat_cols) > 0:
+        categorical_pipeline = Pipeline(steps=[
+            ('imputer', SimpleImputer(strategy='most_frequent')),
+            ('encoder', OneHotEncoder(handle_unknown='ignore'))
+        ])
+        transformers.append(('cat', categorical_pipeline, cat_cols))
+
+    preprocessor = ColumnTransformer(
+        transformers=transformers
+    )
+
+    model = Pipeline(steps=[
+        ('preprocessor', preprocessor),
+        ('classifier', LogisticRegression(max_iter=1000))
+    ])
+
+    return model
+
+

@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Subir Dataset</title>
+</head>
+<body>
+    <h1>Subir Dataset</h1>
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <input type="file" name="dataset" required>
+        <button type="submit">Ejecutar modelo</button>
+    </form>
+
+</body>
+</html>
