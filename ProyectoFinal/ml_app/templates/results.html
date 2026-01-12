@@ -9,3 +9,35 @@
 <img src="/{{ corr_img }}" alt="Matriz de Correlación" width="100%">
 
 <pre>{{ report }}</pre>
+<h3>Distribución del Dataset</h3>
+<ul>
+    <li><strong>Total de registros:</strong> {{ total_size }}</li>
+    <li><strong>Train set:</strong> {{ train_size }}</li>
+    <li><strong>Validation set:</strong> {{ val_size }}</li>
+    <li><strong>Test set:</strong> {{ test_size }}</li>
+     <li>Validation Accuracy: {{ val_accuracy }}%</li>
+</ul>
+<form method="post">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit">Predecir</button>
+</form>
+
+{% if prediction %}
+  <h2>Resultado: {{ prediction }}</h2>
+{% endif %}
+<h2>Comparación de Modelos</h2>
+
+<table border="1">
+  <tr>
+    <th>Modelo</th>
+    <th>Accuracy (%)</th>
+  </tr>
+
+  {% for row in comparison %}
+  <tr>
+    <td>{{ row.model }}</td>
+    <td>{{ row.accuracy }}</td>
+  </tr>
+  {% endfor %}
+</table>

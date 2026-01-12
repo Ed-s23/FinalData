@@ -1,0 +1,76 @@
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
+import os
+from django.conf import settings
+
+
+def plot_protocol_type(df):
+    if 'protocol_type' not in df.columns:
+        return None
+
+    counts = df['protocol_type'].value_counts()
+
+    plt.figure(figsize=(6, 4))
+    plt.bar(counts.index, counts.values)
+    plt.title('Distribución de protocol_type')
+    plt.xlabel('Protocolo')
+    plt.ylabel('Frecuencia')
+
+    path = os.path.join(settings.MEDIA_ROOT, 'protocol_plot.png')
+    plt.tight_layout()
+    plt.savefig(path)
+    plt.close()
+
+    return settings.MEDIA_URL + 'protocol_plot.png'
+    
+
+
+"""def plot_correlation_matrix(df):
+    numeric_df = df.select_dtypes(include='number')
+
+    if numeric_df.shape[1] < 2:
+        return None
+
+    corr = numeric_df.corr()
+
+    plt.figure(figsize=(12, 10))
+    plt.imshow(corr)
+    plt.colorbar()
+    plt.xticks(range(len(corr.columns)), corr.columns, rotation=90, fontsize=6)
+    plt.yticks(range(len(corr.columns)), corr.columns, fontsize=6)
+    plt.tight_layout()
+
+    path = os.path.join(settings.MEDIA_ROOT, 'correlation_matrix.png')
+    plt.savefig(path)
+    plt.close()
+
+    return settings.MEDIA_URL + 'correlation_matrix.png'"""
+def plot_correlation_matrix(df):
+    numeric_df = df.select_dtypes(include='number')
+
+    if numeric_df.shape[1] < 2:
+        return None
+
+    # 🔽 Limitar número de columnas
+    numeric_df = numeric_df.iloc[:, :20]
+
+    corr = numeric_df.corr().fillna(0)
+
+    plt.figure(figsize=(10, 8))
+    plt.imshow(corr, cmap='coolwarm', vmin=-1, vmax=1)
+    plt.colorbar(fraction=0.046, pad=0.04)
+
+    plt.xticks(range(len(corr.columns)), corr.columns, rotation=90, fontsize=7)
+    plt.yticks(range(len(corr.columns)), corr.columns, fontsize=7)
+
+    plt.title('Matriz de Correlación (Top 20 variables)')
+    plt.tight_layout()
+
+    path = os.path.join(settings.MEDIA_ROOT, 'correlation_matrix.png')
+    plt.savefig(path, dpi=150)
+    plt.close()
+
+    return settings.MEDIA_URL + 'correlation_matrix.png'
+
+
