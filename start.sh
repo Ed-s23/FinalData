@@ -1,8 +1,9 @@
-#!/usr/bin/env bash
-set -o errexit
+#!/bin/bash
 
-python manage.py collectstatic --noinput
-python manage.py migrate
+echo "Starting Django app on port $PORT"
 
-exec gunicorn FinalDataset.wsgi:application \
-  --bind 0.0.0.0:${PORT:-8000}
+gunicorn FinalDataset.wsgi:application \
+  --bind 0.0.0.0:$PORT \
+  --workers 1 \
+  --threads 2 \
+  --timeout 120
