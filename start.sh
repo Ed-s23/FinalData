@@ -1,9 +1,12 @@
 #!/bin/bash
 
-echo "PORT recibido: $PORT"
+# Fallback por si PORT viene vacío
+PORT=${PORT:-8080}
+
+echo "PORT usado: $PORT"
 
 exec gunicorn FinalDataset.wsgi:application \
-  --bind 0.0.0.0:${PORT} \
+  --bind 0.0.0.0:$PORT \
   --workers 1 \
   --threads 2 \
   --timeout 120
