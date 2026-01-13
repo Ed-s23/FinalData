@@ -10,7 +10,7 @@ from .ml.data_loader import load_dataset
 from .ml.pepeline import create_pipeline
 from .ml.train import train_model
 from .ml.evaluate import evaluate_model
-from .ml.visualization import plot_protocol_type, plot_correlation_matrix
+#from .ml.visualization import plot_protocol_type, plot_correlation_matrix
 
 
 #! Funcion para el entrenamiento del modelo
@@ -61,9 +61,9 @@ def run_model(request):
         results.update(dataset_info)
 
         #!  Visualizacion de la informacion
-        results['plot_url'] = plot_protocol_type(df)
+        #results['plot_url'] = plot_protocol_type(df)
         #results['corr_img'] = plot_correlation_matrix(df)
-        results['corr_img'] = plot_correlation_matrix(df)
+       # results['corr_img'] = plot_correlation_matrix(df)
         #! Conteo de los tipos de clases
         if 'class' in df.columns:
             class_counts = df['class'].value_counts()
