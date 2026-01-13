@@ -8,7 +8,7 @@ from .columns import KDD_COLUMNS
 #                       )
 import pandas as pd
 import os
-import arff  # liac-arff
+import arff  
 #! convierte el notebook de visualizacion en codigo reutilizable, archivos arff y csv
 def load_dataset(path):
     ext = os.path.splitext(path)[1].lower()

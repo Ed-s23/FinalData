@@ -103,6 +103,25 @@
 
 
 </div>
+<table>
+    <tr>
+        <th>Clase</th>
+        <th>Precisión</th>
+        <th>Recall</th>
+        <th>F1-Score</th>
+        <th>Soporte</th>
+    </tr>
+
+    {% for label, metrics in report.items %}
+    <tr>
+        <td>{{ label }}</td>
+        <td>{{ metrics.precision }}</td>
+        <td>{{ metrics.recall }}</td>
+        <td>{{ metrics.f1_score }}</td>
+        <td>{{ metrics.support }}</td>
+    </tr>
+    {% endfor %}
+</table>
 
 </body>
 </html>

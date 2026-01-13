@@ -2,8 +2,8 @@ from django.shortcuts import render
 from django.core.files.storage import FileSystemStorage
 from django.conf import settings
 import os
-import pandas as pd
 import joblib
+import pandas as pd
 from sklearn.preprocessing import LabelEncoder
 
 from .forms import DatasetUploadForms
@@ -18,32 +18,33 @@ from .ml.visualization import (
 
 
 def run_model(request):
-    # ======================
-    # GET → formulario
-    # ======================
+
+    # =========================
+    # FORMULARIO
+    # =========================
     if request.method == 'GET':
         return render(request, 'upload.html', {
             'form': DatasetUploadForms()
         })
 
-    # ======================
-    # POST → procesamiento
-    # ======================
     if request.method == 'POST' and request.FILES.get('dataset'):
         form = DatasetUploadForms(request.POST, request.FILES)
 
         if not form.is_valid():
             return render(request, 'upload.html', {'form': form})
 
-        # -------- Guardar dataset --------
+        # =========================
+        # GUARDAR DATASET
+        # =========================
         fs = FileSystemStorage()
         filename = fs.save(request.FILES['dataset'].name, request.FILES['dataset'])
         file_path = fs.path(filename)
 
-        # -------- Cargar dataset --------
+        # =========================
+        # CARGAR DATASET
+        # =========================
         df = load_dataset(file_path)
 
-        # -------- Target automático --------
         target = df.columns[-1]
         X = df.drop(columns=[target])
         y = df[target]
@@ -51,60 +52,85 @@ def run_model(request):
         num_cols = X.select_dtypes(include='number').columns.tolist()
         cat_cols = X.select_dtypes(exclude='number').columns.tolist()
 
-        # -------- Entrenamiento --------
+        # =========================
+        # ENTRENAMIENTO
+        # =========================
         pipeline = create_pipeline(num_cols, cat_cols)
         model, X_test, y_test, dataset_info = train_model(X, y, pipeline)
 
-        # -------- Guardar modelo --------
+        # =========================
+        # GUARDAR MODELO
+        # =========================
         model_path = os.path.join(settings.MEDIA_ROOT, 'model.pkl')
         joblib.dump(model, model_path)
 
-        # -------- Evaluación --------
-        results = evaluate_model(model, X_test, y_test)
-        results.update(dataset_info)
+        # =========================
+        # EVALUACIÓN
+        # =========================
+        eval_results = evaluate_model(model, X_test, y_test)
 
-        # ======================
-        # CONTEOS (ANTES de encoding)
-        # ======================
+        clean_report = {
+            k: v for k, v in eval_results["report"].items()
+            if isinstance(v, dict) and "precision" in v
+        }
 
-        # Conteo de clases
+        # =========================
+        # CONTEO DE CLASES
+        # =========================
+        class_data = None
         if 'class' in df.columns:
-            class_counts = df['class'].value_counts()
-            results['class_data'] = class_counts.items()
+            class_data = df['class'].value_counts().items()
 
-            # Encoding solo para ML
             le = LabelEncoder()
             df['class_encoded'] = le.fit_transform(df['class'])
 
-        # Conteo de protocolos (detecta nombre de columna)
-        protocol_column = None
+        # =========================
+        # CONTEO DE PROTOCOLOS
+        # =========================
+        protocol_data = None
         for col in ['protocol_type', 'protocol', 'proto']:
             if col in df.columns:
-                protocol_column = col
+                protocol_data = df[col].value_counts().items()
                 break
 
-        if protocol_column:
-            protocol_counts = df[protocol_column].value_counts()
-            results['protocol_data'] = protocol_counts.items()
-        else:
-            results['protocol_data'] = None
-
-        # ======================
-        # GRÁFICAS (STATIC)
-        # ======================
+        # =========================
+        # GRÁFICAS
+        # =========================
         plot_protocol_type(df)
         plot_correlation_matrix(df)
 
-        results['protocol_img'] = 'protocol_type.png'
-        results['corr_img'] = 'matriz_correlacion.png'
-
-        # ======================
+        # =========================
         # PREVIEW DEL DATASET
-        # ======================
-        results['table'] = df.head(20).to_html(
+        # =========================
+        table_html = df.head(20).to_html(
             classes='data-table',
             index=False,
             border=0
         )
 
-        return render(request, 'results.html', results)
+        # =========================
+        # CONTEXTO FINAL
+        # =========================
+        context = {
+            "accuracy": eval_results["accuracy"],
+            "report": clean_report,
+            "class_data": class_data,
+            "protocol_data": protocol_data,
+            "protocol_img": "protocol_type.png",
+            "corr_img": "matriz_correlacion.png",
+            "table": table_html,
+        }
+        clean_report = {}
+
+        for label, metrics in eval_results["report"].items():
+            if isinstance(metrics, dict) and "precision" in metrics:
+                clean_report[label] = {
+                    "precision": round(metrics["precision"], 4),
+                    "recall": round(metrics["recall"], 4),
+                    "f1_score": round(metrics["f1-score"], 4),
+                    "support": metrics["support"],
+                }
+
+        context.update(dataset_info)
+
+        return render(request, 'results.html', context)
