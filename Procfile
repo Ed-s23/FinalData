@@ -1,1 +1,1 @@
-web: gunicorn ProyectoFinal.wsgi:application
+web: ./start.sh
