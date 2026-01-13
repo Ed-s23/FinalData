@@ -5,114 +5,106 @@ import os
 import pandas as pd
 import joblib
 from sklearn.preprocessing import LabelEncoder
-from .forms import DatasetUploadForms, PredictionForm
+
+from .forms import DatasetUploadForms
 from .ml.data_loader import load_dataset
 from .ml.pepeline import create_pipeline
 from .ml.train import train_model
 from .ml.evaluate import evaluate_model
-from .ml.visualization import plot_protocol_type, plot_correlation_matrix
+from .ml.visualization import (
+    plot_protocol_type,
+    plot_correlation_matrix
+)
 
-
-#! Funcion para el entrenamiento del modelo
 
 def run_model(request):
-
-    #! Apartado del GET 
+    # ======================
+    # GET → formulario
+    # ======================
     if request.method == 'GET':
         return render(request, 'upload.html', {
             'form': DatasetUploadForms()
         })
 
-    #! Apartado de POST 
+    # ======================
+    # POST → procesamiento
+    # ======================
     if request.method == 'POST' and request.FILES.get('dataset'):
         form = DatasetUploadForms(request.POST, request.FILES)
 
         if not form.is_valid():
             return render(request, 'upload.html', {'form': form})
 
-        #! Guardar archivo
-        dataset_file = request.FILES['dataset']
+        # -------- Guardar dataset --------
         fs = FileSystemStorage()
-        filename = fs.save(dataset_file.name, dataset_file)
+        filename = fs.save(request.FILES['dataset'].name, request.FILES['dataset'])
         file_path = fs.path(filename)
 
-        #!  Cargar dataset
+        # -------- Cargar dataset --------
         df = load_dataset(file_path)
 
-        #! Target automático
+        # -------- Target automático --------
         target = df.columns[-1]
         X = df.drop(columns=[target])
         y = df[target]
 
-        #! Procsamiento de los tipos de columnas
         num_cols = X.select_dtypes(include='number').columns.tolist()
         cat_cols = X.select_dtypes(exclude='number').columns.tolist()
 
-        #!Pipeline prosesado con el entrenamiento
+        # -------- Entrenamiento --------
         pipeline = create_pipeline(num_cols, cat_cols)
         model, X_test, y_test, dataset_info = train_model(X, y, pipeline)
 
-        #!Guardar el modelo entrenado
+        # -------- Guardar modelo --------
         model_path = os.path.join(settings.MEDIA_ROOT, 'model.pkl')
         joblib.dump(model, model_path)
 
-        #! Evaluación de los datos
+        # -------- Evaluación --------
         results = evaluate_model(model, X_test, y_test)
         results.update(dataset_info)
 
-        #!  Visualizacion de la informacion
-        results['plot_url'] = plot_protocol_type(df)
-        #results['corr_img'] = plot_correlation_matrix(df)
-        results['corr_img'] = plot_correlation_matrix(df)
-        #! Conteo de los tipos de clases
+        # ======================
+        # CONTEOS (ANTES de encoding)
+        # ======================
+
+        # Conteo de clases
         if 'class' in df.columns:
             class_counts = df['class'].value_counts()
             results['class_data'] = class_counts.items()
 
-        if 'class' in df.columns:
+            # Encoding solo para ML
             le = LabelEncoder()
-            df['class'] = le.fit_transform(df['class'])
+            df['class_encoded'] = le.fit_transform(df['class'])
 
-        # Preview del dataset (primeras 20 filas)
-        table_html = df.head(20).to_html(
+        # Conteo de protocolos (detecta nombre de columna)
+        protocol_column = None
+        for col in ['protocol_type', 'protocol', 'proto']:
+            if col in df.columns:
+                protocol_column = col
+                break
+
+        if protocol_column:
+            protocol_counts = df[protocol_column].value_counts()
+            results['protocol_data'] = protocol_counts.items()
+        else:
+            results['protocol_data'] = None
+
+        # ======================
+        # GRÁFICAS (STATIC)
+        # ======================
+        plot_protocol_type(df)
+        plot_correlation_matrix(df)
+
+        results['protocol_img'] = 'protocol_type.png'
+        results['corr_img'] = 'matriz_correlacion.png'
+
+        # ======================
+        # PREVIEW DEL DATASET
+        # ======================
+        results['table'] = df.head(20).to_html(
             classes='data-table',
             index=False,
             border=0
         )
-        if 'protocol_type' in df.columns:
-            protocol_counts = df['protocol_type'].value_counts()
-            protocol_data = protocol_counts.items()
-        else:
-            protocol_data = None
 
-        results['protocol_data'] = protocol_data
-        results['table'] = table_html
         return render(request, 'results.html', results)
-
-
-
-
-# PREDICCIÓN DESDE FORMULARIO
-
-#def predict_view(request):
-#    prediction = None
-
-#    if request.method == 'POST':
-#        form = PredictionForm(request.POST)
-#
-#        if form.is_valid():
-#            data = form.cleaned_data
-#            df_input = pd.DataFrame([data])
-
-#            model_path = os.path.join(settings.MEDIA_ROOT, 'model.pkl')
-#            model = joblib.load(model_path)
-
-#            prediction = model.predict(df_input)[0]
-
-#    else:
-#        form = PredictionForm()
-
-#    return render(request, 'predict.html', {
-#        'form': form,
-#        'prediction': prediction
-#    })

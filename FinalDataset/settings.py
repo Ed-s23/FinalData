@@ -41,6 +41,8 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+
+    
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -129,6 +131,46 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 #! Donde se guardaran los archivos al subirse
 #! y el como servirlos en el desarrollo 
+#from pathlib import Path
+
+#BASE_DIR = Path(__file__).resolve().parent.parent
+
+#STATIC_URL = '/static/'
+#STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+#MEDIA_URL = '/media/'
+#MEDIA_ROOT = BASE_DIR / 'media'
+#STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+#from pathlib import Path
+
+# Ruta base del proyecto
+#BASE_DIR = Path(__file__).resolve().parent.parent
+
+
+# ==============================
+# Configuración de archivos
+# ==============================
+
+# Campo por defecto de Django
+#DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+# ------------------------------
+# Archivos estáticos (CSS, JS)
+# ------------------------------
+#STATIC_URL = '/static/'
+#STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+# Whitenoise para producción (Railway)
+#STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+
+
+# ------------------------------
+# Archivos subidos / generados
+# (imágenes, CSV, Excel, etc.)
+# ------------------------------
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -138,4 +180,8 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+

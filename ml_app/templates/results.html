@@ -9,7 +9,9 @@
 
 </head>
 <body>
+
     <h1>Resultados del proyecto </h1>
+
 {% if table %}
 <h2>Vista previa del Dataset</h2>
 
@@ -17,6 +19,13 @@
     {{ table|safe }}
 </div>
 {% endif %}
+{% load static %}
+
+<h3>Matriz de correlación</h3>
+<img src="{% static corr_img %}" alt="Matriz de correlación">
+
+<h3>Distribución del protocolo</h3>
+<img src="{% static protocol_img %}" alt="Distribución del protocolo">
 
 <div class="container">
 
@@ -81,7 +90,6 @@
 {% endif %}
 
 
-
     <div class="card">
         <h3>Distribución del Dataset</h3>
         <ul>
@@ -93,14 +101,6 @@
         </ul>
     </div>
 
-    {% if corr_img %}
-    <div class="card">
-        <h3>Matriz de correlación</h3>
-        <a href="{{ corr_img }}" download>
-            <button>Descargar matriz de Dorrelacion</button>
-        </a>
-    </div>
-    {% endif %}
 
 </div>
 

@@ -49,4 +49,26 @@ def plot_correlation_matrix(df):
     plt.close()
 
     return settings.MEDIA_URL + 'correlation_matrix.png'
-1
+import matplotlib.pyplot as plt
+import os
+from django.conf import settings
+
+def plot_protocol_type(df):
+    plt.figure()
+    df['protocol_type'].value_counts().plot(kind='bar')
+    plt.title("Distribución del protocolo")
+
+    path = os.path.join(settings.STATIC_ROOT, "protocol_type.png")
+    plt.savefig(path, bbox_inches="tight")
+    plt.close()
+
+def plot_correlation_matrix(df):
+    plt.figure(figsize=(8,6))
+    corr = df.select_dtypes(include='number').corr()
+    plt.imshow(corr, cmap='coolwarm')
+    plt.colorbar()
+    plt.title("Matriz de correlación")
+
+    path = os.path.join(settings.STATIC_ROOT, "matriz_correlacion.png")
+    plt.savefig(path, bbox_inches="tight")
+    plt.close()
